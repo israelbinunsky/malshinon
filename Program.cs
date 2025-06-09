@@ -14,7 +14,7 @@ namespace malshinon
         static void Main(string[] args)
         {
             Dal dal = new Dal();
-            dal.Identification();
+            dal.addReport();
         }
     }
 }

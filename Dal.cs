@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
+using Org.BouncyCastle.Crypto;
 using static System.Collections.Specialized.BitVector32;
 
 public class Dal
@@ -18,7 +19,7 @@ public class Dal
     {
         this.conn = new MySqlConnection(this.strCon);
     }
-    public void reporterIdentification()
+    public string[] reporterIdentification()
     {
         Console.WriteLine("enter your name:");
         string name = Console.ReadLine();
@@ -38,15 +39,12 @@ public class Dal
             {
                 this.SetNewReporter(first, last);
             }
-            else
-            {
-                Console.WriteLine("already exist.");
-            }
         }
         catch (Exception e)
         {
             Console.WriteLine($"error: {e}");
         }
+        return names;
     }
 
     private string ganarateCode(int len)
@@ -64,11 +62,11 @@ public class Dal
     {
         string secret_code = ganarateCode(4);
         string type = "reporter";
-        this.query = $"INSERT INTO people (first_name, last_name, secret_code, type) VALUES (@first_name, @last_name, @secret_code, @type);";
+        this.query = "INSERT INTO people (first_name, last_name, secret_code, type) VALUES (@first_name, @last_name, @secret_code, @type);";
         try
         {
             this.conn.Open();
-            MySqlCommand cmd = new MySqlCommand(query, this.conn);  
+            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);  
             cmd.Parameters.AddWithValue("@first_name", first);
             cmd.Parameters.AddWithValue("@last_name", last);
             cmd.Parameters.AddWithValue("@secret_code", secret_code);
@@ -85,6 +83,46 @@ public class Dal
 
     public void addReport()
     {
+        string[] names = reporterIdentification();
+        Console.WriteLine("enter report:");
+        string report = Console.ReadLine();
+        int id = getPersonId(names);
+        this.query = "INSERT INTO intelreports (reporter_id, text) VALUES (@reporter_id, @text);";
+        try
+        {
+            this.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
+            cmd.Parameters.AddWithValue("@reporter_id", id);
+            cmd.Parameters.AddWithValue("@text", report);
+            cmd.ExecuteNonQuery();
+            this.conn.Close();
+            Console.WriteLine("edded report.");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
 
+    }
+
+    private int getPersonId(string[] names)
+    {
+        int id = 1000;
+        this.query = "SELECT id FROM people WHERE first_name = @first_name AND last_name = @last_name;";
+        try
+        {
+            this.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
+            cmd.Parameters.AddWithValue("@first_name", names[0]);
+            cmd.Parameters.AddWithValue("@last_name", names[1]);
+            id = Convert.ToInt32(cmd.ExecuteScalar());
+            this.conn.Close();
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
+        return id;
     }
 }
