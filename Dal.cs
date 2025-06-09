@@ -82,4 +82,9 @@ public class Dal
             Console.WriteLine($"error: {e}");
         }
     }
+
+    public void addReport()
+    {
+
+    }
 }
