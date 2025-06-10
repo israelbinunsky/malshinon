@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
 using Org.BouncyCastle.Crypto;
 using static System.Collections.Specialized.BitVector32;
+using static System.Net.Mime.MediaTypeNames;
 
 public class Dal
 {
@@ -80,7 +82,7 @@ public class Dal
             cmd.Parameters.AddWithValue("@type", type);
             cmd.ExecuteNonQuery();
             this.conn.Close();
-            Console.WriteLine("edded reporter.");
+            Console.WriteLine("edded man.");
         }
         catch (Exception e)
         {
@@ -91,19 +93,22 @@ public class Dal
     public void addReport()
     {
         string[] rNames = reporterIdentification();
-        Console.WriteLine("enter report:");
+        Console.WriteLine("enter report your. the target name should be Capitalized:");
         string report = Console.ReadLine();
         int reportId = getPersonId(rNames);
-        this.query = "INSERT INTO intelreports (reporter_id, text) VALUES (@reporter_id, @text);";
+        string[] targetNames = getTargetName(report);
+        manIdentification(targetNames, "target");
+        int targetId = getPersonId(targetNames);
+        this.query = "INSERT INTO intelreports (reporter_id, text, target_id) VALUES (@reporter_id, @text, @target_id);";
         try
         {
             this.conn.Open();
             MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
             cmd.Parameters.AddWithValue("@reporter_id", reportId);
             cmd.Parameters.AddWithValue("@text", report);
+            cmd.Parameters.AddWithValue("@target_id", targetId);
             cmd.ExecuteNonQuery();
             this.conn.Close();
-            setTargetName(report);
             Console.WriteLine("edded report.");
         }
         catch (Exception e)
@@ -134,24 +139,18 @@ public class Dal
         return id;
     }
 
-
-
-    private void setTargetName(string report)
+    private string[] getTargetName(string txt)
     {
-        this.query = "SELECT REGEXP_SUBSTR(text, '[A-Z]+ [A-Z]+') AS name FROM intelreports WHERE text = @report;";
-        try
+        string[] names = new string[2];
+        string[] reportWards = txt.Split(' ');
+        for (int i = 0; i < reportWards.Length -1; i++)
         {
-            this.conn.Open();
-            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
-            cmd.Parameters.AddWithValue("@reportId", report);
-            string name = cmd.ExecuteScalar().ToString().ToLower(); 
-            this.conn.Close();
-            string[] names = name.Split(' ');
-            manIdentification(names, "target");
+            if (char.IsUpper(reportWards[i][0]) && char.IsUpper(reportWards[i + 1][0]))
+            {
+                names[0] = reportWards[i];
+                names[1] = reportWards[i + 1];
+            }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine($"error: {e}");
-        }
+        return names;
     }
 }
