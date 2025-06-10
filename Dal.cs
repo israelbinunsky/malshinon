@@ -82,14 +82,13 @@ public class Dal
             cmd.Parameters.AddWithValue("@type", type);
             cmd.ExecuteNonQuery();
             this.conn.Close();
-            Console.WriteLine("edded man.");
+            Console.WriteLine($"{first} {last} edded to table as a {type}.");
         }
         catch (Exception e)
         {
             Console.WriteLine($"error: {e}");
         }
     }
-
 
 
     public int getPersonId(string[] names)
@@ -111,6 +110,32 @@ public class Dal
             Console.WriteLine($"error: {e}");
         }
         return id;
+    }
+
+    public string getPersonName(int id)
+    {
+        this.query = "SELECT first_name, last_name FROM people WHERE id = @id;";
+        string name = "";
+        try
+        {
+            this.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
+            cmd.Parameters.AddWithValue("@id", id);
+            MySqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                string first = reader.GetString("first_name");
+                string last = reader.GetString("last_name");
+                name = $"{first} {last}";
+            }
+            reader.Close();
+            this.conn.Close();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
+        return name;
     }
 
     public string[] getTargetName(string txt)
