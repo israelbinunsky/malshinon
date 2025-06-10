@@ -90,37 +90,11 @@ public class Dal
         }
     }
 
-    public void addReport()
-    {
-        string[] rNames = reporterIdentification();
-        Console.WriteLine("enter report your. the target name should be Capitalized:");
-        string report = Console.ReadLine();
-        int reportId = getPersonId(rNames);
-        string[] targetNames = getTargetName(report);
-        manIdentification(targetNames, "target");
-        int targetId = getPersonId(targetNames);
-        this.query = "INSERT INTO intelreports (reporter_id, text, target_id) VALUES (@reporter_id, @text, @target_id);";
-        try
-        {
-            this.conn.Open();
-            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
-            cmd.Parameters.AddWithValue("@reporter_id", reportId);
-            cmd.Parameters.AddWithValue("@text", report);
-            cmd.Parameters.AddWithValue("@target_id", targetId);
-            cmd.ExecuteNonQuery();
-            this.conn.Close();
-            Console.WriteLine("edded report.");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"error: {e}");
-        }
 
-    }
 
-    private int getPersonId(string[] names)
+    public int getPersonId(string[] names)
     {
-        int id = 1000;
+        int id = 0;
         this.query = "SELECT id FROM people WHERE first_name = @first_name AND last_name = @last_name;";
         try
         {
@@ -139,7 +113,7 @@ public class Dal
         return id;
     }
 
-    private string[] getTargetName(string txt)
+    public string[] getTargetName(string txt)
     {
         string[] names = new string[2];
         string[] reportWards = txt.Split(' ');
@@ -153,4 +127,5 @@ public class Dal
         }
         return names;
     }
+
 }

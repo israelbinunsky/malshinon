@@ -13,8 +13,8 @@ namespace malshinon
     {
         static void Main(string[] args)
         {
-            Dal dal = new Dal();
-            dal.addReport();
+            report report = new report();
+            report.addReport();
         }
     }
 }
