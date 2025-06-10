@@ -19,11 +19,19 @@ public class Dal
     {
         this.conn = new MySqlConnection(this.strCon);
     }
+
     public string[] reporterIdentification()
     {
         Console.WriteLine("enter your name:");
         string name = Console.ReadLine();
         string[] names = name.Split(' ');
+        manIdentification(names, "reporter");
+        return names;
+    }
+
+    public string[] manIdentification(string[] names, string type)
+    {
+        
         string first = names[0];
         string last = names[1];
        try 
@@ -31,13 +39,13 @@ public class Dal
         this.conn.Open();
         this.query = "SELECT EXISTS (SELECT 1 FROM people WHERE first_name = @first AND last_name = @last);";
         MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
-        cmd.Parameters.AddWithValue("@first", first);
-        cmd.Parameters.AddWithValue("@last", last);
+        cmd.Parameters.AddWithValue("@first", names[0]);
+        cmd.Parameters.AddWithValue("@last", names[1]);
         bool reader = Convert.ToBoolean(cmd.ExecuteScalar());
         this.conn.Close();
             if (reader == false)
             {
-                this.SetNewReporter(first, last);
+                this.SetNewMan(first, last, type);
             }
         }
         catch (Exception e)
@@ -58,10 +66,9 @@ public class Dal
         return code;
     }
 
-    private void SetNewReporter(string first, string last)
+    private void SetNewMan(string first, string last, string type)
     {
         string secret_code = ganarateCode(4);
-        string type = "reporter";
         this.query = "INSERT INTO people (first_name, last_name, secret_code, type) VALUES (@first_name, @last_name, @secret_code, @type);";
         try
         {
@@ -83,19 +90,20 @@ public class Dal
 
     public void addReport()
     {
-        string[] names = reporterIdentification();
+        string[] rNames = reporterIdentification();
         Console.WriteLine("enter report:");
         string report = Console.ReadLine();
-        int id = getPersonId(names);
+        int reportId = getPersonId(rNames);
         this.query = "INSERT INTO intelreports (reporter_id, text) VALUES (@reporter_id, @text);";
         try
         {
             this.conn.Open();
             MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
-            cmd.Parameters.AddWithValue("@reporter_id", id);
+            cmd.Parameters.AddWithValue("@reporter_id", reportId);
             cmd.Parameters.AddWithValue("@text", report);
             cmd.ExecuteNonQuery();
             this.conn.Close();
+            setTargetName(report);
             Console.WriteLine("edded report.");
         }
         catch (Exception e)
@@ -124,5 +132,26 @@ public class Dal
             Console.WriteLine($"error: {e}");
         }
         return id;
+    }
+
+
+
+    private void setTargetName(string report)
+    {
+        this.query = "SELECT REGEXP_SUBSTR(text, '[A-Z]+ [A-Z]+') AS name FROM intelreports WHERE text = @report;";
+        try
+        {
+            this.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
+            cmd.Parameters.AddWithValue("@reportId", report);
+            string name = cmd.ExecuteScalar().ToString().ToLower(); 
+            this.conn.Close();
+            string[] names = name.Split(' ');
+            manIdentification(names, "target");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
     }
 }
