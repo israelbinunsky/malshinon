@@ -11,13 +11,13 @@ using Org.BouncyCastle.Crypto;
 using static System.Collections.Specialized.BitVector32;
 using static System.Net.Mime.MediaTypeNames;
 
-public class Dal
+public class peopleDal
 {
     public string strCon = "server=localhost;user=root;passward=;database=malshinon;";
     public MySqlConnection conn;
     public string query;
 
-    public Dal()
+    public peopleDal()
     {
         this.conn = new MySqlConnection(this.strCon);
     }
@@ -46,7 +46,6 @@ public class Dal
         }
         return names;
     }
-
 
 
     private void SetNewMan(string first, string last, string type)

@@ -2,12 +2,13 @@
 
 public class report
 {
-    Dal dal;
+    peopleDal dal;
     Updates updates;
     public report()
     {
-        dal = new Dal();
+        dal = new peopleDal();
         updates = new Updates();
+
     }
 
     public string[] reporterIdentification()

@@ -2,10 +2,12 @@
 
 public class Updates
 {
-    Dal dal;
+    peopleDal dal;
+    Alerts alerts;
     public Updates()
     {
-        dal = new Dal();
+        dal = new peopleDal();
+        alerts = new Alerts();
     }
     public void addCount(string type, int id)
     {
@@ -68,6 +70,7 @@ public class Updates
             updateManType(id, "potential_threat");
             string name = dal.getPersonName(id);
             Console.WriteLine($"{name} is a potential threat!");
+            alerts.addAlert(id);
         }
     }
 }
