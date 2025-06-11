@@ -13,16 +13,15 @@ public class report
 
     public string[] reporterIdentification()
     {
-        Console.WriteLine("enter your name:");
+        Console.WriteLine("please enter your name:");
         string name = Console.ReadLine();
         string[] names = name.Split(' ');
         dal.manIdentification(names, "reporter");
         return names;
     }
 
-    public void addReport()
+    public void addReport(string[] reporterNames)
     {
-        string[] reporterNames = this.reporterIdentification();
         Console.WriteLine("enter your report. the target name should be Capitalized:");
         string report = Console.ReadLine();
         int reporterId = dal.getPersonId(reporterNames);

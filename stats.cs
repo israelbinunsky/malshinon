@@ -1,15 +1,15 @@
 ﻿using System.Xml.Linq;
 using MySql.Data.MySqlClient;
 
-public class Stats
+public static class Stats
 {
-    peopleDal dal;
-    public Stats()
+    static peopleDal dal;
+    static Stats()
     {
         dal = new peopleDal();
     }
 
-    public void getAllThreats()
+    public static void getAllThreats()
     {
         int cnt = 0;
         dal.query = "SELECT target_id, created_at FROM alerts";
@@ -35,7 +35,7 @@ public class Stats
         }
     }
 
-    public void getAllAgents()
+    public static void getAllAgents()
     {
         int cnt = 0;
         dal.query = "SELECT first_name, last_name FROM people WHERE type = potential_agent";
