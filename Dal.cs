@@ -22,18 +22,8 @@ public class Dal
         this.conn = new MySqlConnection(this.strCon);
     }
 
-    public string[] reporterIdentification()
-    {
-        Console.WriteLine("enter your name:");
-        string name = Console.ReadLine();
-        string[] names = name.Split(' ');
-        manIdentification(names, "reporter");
-        return names;
-    }
-
     public string[] manIdentification(string[] names, string type)
-    {
-        
+    {  
         string first = names[0];
         string last = names[1];
        try 
@@ -57,20 +47,11 @@ public class Dal
         return names;
     }
 
-    private string ganarateCode(int len)
-    {
-        string code = "";
-        Random random = new Random();
-        for (int i = 0; i < len; i++)
-        {
-            code += random.Next(9);
-        }
-        return code;
-    }
+
 
     private void SetNewMan(string first, string last, string type)
     {
-        string secret_code = ganarateCode(4);
+        string secret_code = local.ganarateCode(4);
         this.query = "INSERT INTO people (first_name, last_name, secret_code, type) VALUES (@first_name, @last_name, @secret_code, @type);";
         try
         {
@@ -138,19 +119,6 @@ public class Dal
         return name;
     }
 
-    public string[] getTargetName(string txt)
-    {
-        string[] names = new string[2];
-        string[] reportWards = txt.Split(' ');
-        for (int i = 0; i < reportWards.Length -1; i++)
-        {
-            if (char.IsUpper(reportWards[i][0]) && char.IsUpper(reportWards[i + 1][0]))
-            {
-                names[0] = reportWards[i];
-                names[1] = reportWards[i + 1];
-            }
-        }
-        return names;
-    }
+
 
 }
