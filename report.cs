@@ -1,4 +1,6 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System.Collections.Generic;
+using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Common;
 
 public class report
 {
@@ -13,10 +15,14 @@ public class report
 
     public string[] reporterIdentification()
     {
-        Console.WriteLine("please enter your name:");
+        Console.WriteLine("please enter your full name. separate with space:");
         string name = Console.ReadLine();
         string[] names = name.Split(' ');
-        dal.manIdentification(names, "reporter");
+        bool isReporterExist = dal.manIdentification(names);
+        if (isReporterExist == false)
+        {
+            dal.SetNewMan(names, "reporter");
+        }
         return names;
     }
 
@@ -26,7 +32,11 @@ public class report
         string report = Console.ReadLine();
         int reporterId = dal.getPersonId(reporterNames);
         string[] targetNames = local.getTargetName(report);
-        dal.manIdentification(targetNames, "target");
+        bool isTargetExist = dal.manIdentification(targetNames);
+        if (isTargetExist == false)
+        {
+            dal.SetNewMan(targetNames, "target");
+        }
         int targetId = dal.getPersonId(targetNames);
         
         dal.query = "INSERT INTO intelreports (reporter_id, text, target_id) VALUES (@reporter_id, @text, @target_id);";

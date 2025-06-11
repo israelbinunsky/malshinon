@@ -51,9 +51,13 @@ public class Updates
         dal.conn.Close();
         if (num_reports >= 10)
         {
-            updateManType(id, "potential_agent");
-            string name = dal.getPersonName(id);
-            Console.WriteLine($"{name} changed to potential agent.");
+            int ReportsAverageLen = getReportsAverageLen(id);
+            if (ReportsAverageLen > 10)
+            {
+                updateManType(id, "potential_agent");
+                string name = dal.getPersonName(id);
+                Console.WriteLine($"{name} changed to potential agent.");
+            }
         }
     }
 
@@ -72,5 +76,45 @@ public class Updates
             Console.WriteLine($"{name} is a potential threat!");
             alerts.addAlert(id);
         }
+    }
+
+    public int getReportsAverageLen(int id)
+    {
+        int result = 0;
+        int cnt = 0;
+        List<int> lens = new List<int>();
+        try
+        {
+            dal.query = "SELECT text FROM intelreports WHERE reporter_id = @id";
+            dal.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(dal.query, dal.conn);
+            cmd.Parameters.AddWithValue("@id", id);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                string txt = reader.GetString("text");
+                List<char> chars = new List<char>();
+                foreach (char c in txt)
+                {
+                    chars.Add(c);  
+                }
+                int len = chars.Count();
+                lens.Add(len);
+                cnt++;
+            }
+            dal.conn.Close();
+        }
+
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
+        int sum = 0;
+        foreach (int n in lens)
+        {
+            sum += n;
+        }
+        result = sum / lens.Count();
+        return result;
     }
 }

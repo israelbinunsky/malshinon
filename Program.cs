@@ -22,7 +22,7 @@ namespace malshinon
             Console.WriteLine("Wellcome to Malshinon!");
             string[] reporterNames = report.reporterIdentification();
             Console.WriteLine("To add a new report enter 1");
-            Console.WriteLine("To get all potential threats enter 2");
+            Console.WriteLine("To get all alerts enter 2");
             Console.WriteLine("To get all potential agents enter 3");
             Console.WriteLine("To exit enter 4:");
             string c = Console.ReadLine();
@@ -33,10 +33,12 @@ namespace malshinon
                     report.addReport(reporterNames);
                     break;
                 case 2:
-                    Stats.getAllThreats();
+                    Stats.getAllAlerts();
+                    menue();
                     break;
                 case 3:
-                    Stats.getAllThreats();
+                    Stats.getAllAgents();
+                    menue();
                     break;
                 case 4:
                     break;

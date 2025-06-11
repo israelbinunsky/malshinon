@@ -22,10 +22,11 @@ public class peopleDal
         this.conn = new MySqlConnection(this.strCon);
     }
 
-    public string[] manIdentification(string[] names, string type)
+    public bool manIdentification(string[] names)
     {  
         string first = names[0];
         string last = names[1];
+        bool result = false;
        try 
         { 
         this.conn.Open();
@@ -33,23 +34,21 @@ public class peopleDal
         MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
         cmd.Parameters.AddWithValue("@first", names[0]);
         cmd.Parameters.AddWithValue("@last", names[1]);
-        bool reader = Convert.ToBoolean(cmd.ExecuteScalar());
+        result = Convert.ToBoolean(cmd.ExecuteScalar());
         this.conn.Close();
-            if (reader == false)
-            {
-                this.SetNewMan(first, last, type);
-            }
         }
         catch (Exception e)
         {
             Console.WriteLine($"error: {e}");
         }
-        return names;
+        return result;
     }
 
 
-    private void SetNewMan(string first, string last, string type)
+    public void SetNewMan(string[] names, string type)
     {
+        string first = names[0];
+        string last = names[1];
         string secret_code = local.ganarateCode(4);
         this.query = "INSERT INTO people (first_name, last_name, secret_code, type) VALUES (@first_name, @last_name, @secret_code, @type);";
         try
@@ -119,5 +118,27 @@ public class peopleDal
     }
 
 
-
+    public string getPersonType(int id)
+    {
+        this.query = "SELECT type FROM people WHERE id = @id;";
+        string type = "";
+        try
+        {
+            this.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
+            cmd.Parameters.AddWithValue("@id", id);
+            MySqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                type = reader.GetString("type");
+            }
+            reader.Close();
+            this.conn.Close();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
+        return type;
+    }
 }

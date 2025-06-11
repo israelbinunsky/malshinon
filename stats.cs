@@ -9,7 +9,7 @@ public static class Stats
         dal = new peopleDal();
     }
 
-    public static void getAllThreats()
+    public static void getAllAlerts()
     {
         int cnt = 0;
         dal.query = "SELECT target_id, created_at FROM alerts";
@@ -27,7 +27,14 @@ public static class Stats
                 Console.WriteLine($"name: {name}. created at: {created_at}");
             }
             dal.conn.Close();
-            Console.WriteLine($"num of alerts: {cnt}");
+            if (cnt > 0)
+            {
+                Console.WriteLine("No threats have been identified yet.");
+            }
+            else
+            {
+                Console.WriteLine($"num of alerts: {cnt}");
+            }
         }
         catch (Exception e)
         {
@@ -52,7 +59,14 @@ public static class Stats
                 Console.WriteLine($"{first_name} {last_name}.");
             }
             dal.conn.Close();
-            Console.WriteLine($"num of alerts: {cnt}");
+            if (cnt > 0)
+            {
+                Console.WriteLine("There is no agents yet.");
+            }
+            else
+            {
+                Console.WriteLine($"num of agents: {cnt}");
+            }
         }
         catch (Exception e)
         {
