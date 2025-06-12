@@ -18,10 +18,22 @@ public class report
         Console.WriteLine("please enter your full name. separate with space:");
         string name = Console.ReadLine();
         string[] names = name.Split(' ');
-        bool isReporterExist = dal.manIdentification(names);
-        if (isReporterExist == false)
+        if (names.Length == 2)
         {
-            dal.SetNewMan(names, "reporter");
+            bool isReporterExist = dal.isManExist(names);
+            if (isReporterExist == false)
+            {
+                dal.SetNewMan(names, "reporter");
+            }
+            else
+            {
+                int id = dal.getPersonId(names);
+                string type = dal.getPersonType(id);
+                if (type == "target")
+                {
+                    updates.updateManType(id, "both");
+                }
+            }
         }
         return names;
     }
@@ -32,13 +44,23 @@ public class report
         string report = Console.ReadLine();
         int reporterId = dal.getPersonId(reporterNames);
         string[] targetNames = local.getTargetName(report);
-        bool isTargetExist = dal.manIdentification(targetNames);
+        bool isTargetExist = dal.isManExist(targetNames);
+        int targetId = -1;
+
         if (isTargetExist == false)
         {
             dal.SetNewMan(targetNames, "target");
+            targetId = dal.getPersonId(targetNames);
         }
-        int targetId = dal.getPersonId(targetNames);
-        
+        else
+        {
+            targetId = dal.getPersonId(targetNames);
+            string type = dal.getPersonType(targetId);
+            if (type == "reporter")
+            {
+                updates.updateManType(targetId, "both");
+            }
+        }
         dal.query = "INSERT INTO intelreports (reporter_id, text, target_id) VALUES (@reporter_id, @text, @target_id);";
         try
         {

@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Common;
 
 public class Updates
 {
@@ -43,45 +44,43 @@ public class Updates
 
     public void reporterToAgent(int id)
     {
-        dal.query = "SELECT num_reports FROM people WHERE id = @id";
-        dal.conn.Open();
-        MySqlCommand cmd = new MySqlCommand(dal.query, dal.conn);
-        cmd.Parameters.AddWithValue("@id", id);
-        int num_reports = Convert.ToInt32(cmd.ExecuteScalar());
-        dal.conn.Close();
-        if (num_reports >= 10)
+        string type = dal.getPersonType(id);
+        if (type != "potential_agent")
         {
-            int ReportsAverageLen = getReportsAverageLen(id);
-            if (ReportsAverageLen > 10)
+            int num_reports = dal.getNumReports(id);
+            if (num_reports >= 9)
             {
-                updateManType(id, "potential_agent");
-                string name = dal.getPersonName(id);
-                Console.WriteLine($"{name} changed to potential agent.");
+                Console.WriteLine("This is your 10th report.");
+                int ReportsAverageLen = calculateAverageLen(id);
+                if (ReportsAverageLen > 15)
+                {
+                    updateManType(id, "potential_agent");
+                    string name = dal.getPersonName(id);
+                    Console.WriteLine("The total average of your reports is abouve 10 letters.");
+                    Console.WriteLine($"Congratulations {name}! your status updated to potential agent.");
+                }
             }
         }
     }
 
     public void targetToThreat(int id)
     {
-        dal.query = "SELECT num_mentions FROM people WHERE id = @id";
-        dal.conn.Open();
-        MySqlCommand cmd = new MySqlCommand(dal.query, dal.conn);
-        cmd.Parameters.AddWithValue("@id", id);
-        int num_mentions = Convert.ToInt32(cmd.ExecuteScalar());
-        dal.conn.Close();
-        if (num_mentions >= 10)
+        string type = dal.getPersonType(id);
+        if (type != "potential_threat")
         {
-            updateManType(id, "potential_threat");
-            string name = dal.getPersonName(id);
-            Console.WriteLine($"{name} is a potential threat!");
-            alerts.addAlert(id);
+            int num_mentions = dal.getNumMentions(id);
+            if (num_mentions >= 10)
+            {
+                updateManType(id, "potential_threat");
+                string name = dal.getPersonName(id);
+                Console.WriteLine($"{name} is a potential threat!");
+                alerts.addAlert(id);
+            }
         }
     }
 
-    public int getReportsAverageLen(int id)
+    public List<int> getReportsLens(int id)
     {
-        int result = 0;
-        int cnt = 0;
         List<int> lens = new List<int>();
         try
         {
@@ -93,14 +92,8 @@ public class Updates
             while (reader.Read())
             {
                 string txt = reader.GetString("text");
-                List<char> chars = new List<char>();
-                foreach (char c in txt)
-                {
-                    chars.Add(c);  
-                }
-                int len = chars.Count();
+                int len = txt.Count(c => c != ' ');
                 lens.Add(len);
-                cnt++;
             }
             dal.conn.Close();
         }
@@ -109,12 +102,42 @@ public class Updates
         {
             Console.WriteLine($"error: {e}");
         }
+        return lens;
+    }
+
+    public int calculateAverageLen(int id)
+    {
+        List<int> lens = getReportsLens(id);
+        int result = 0;
+        int cnt = lens.Count();
         int sum = 0;
         foreach (int n in lens)
         {
             sum += n;
         }
-        result = sum / lens.Count();
+        result = sum / cnt;
         return result;
+    }
+
+    public void getDatetimes(int targetId)
+    {
+        try
+        {
+            dal.query = "SELECT datetime FROM intelreports WHERE target_id = @targetId";
+            dal.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(dal.query, dal.conn);
+            cmd.Parameters.AddWithValue("@target_id", targetId);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                DateTime txt = reader.GetDateTime("text"); 
+            }
+            dal.conn.Close();
+        }
+
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
     }
 }

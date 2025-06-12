@@ -22,7 +22,7 @@ public class peopleDal
         this.conn = new MySqlConnection(this.strCon);
     }
 
-    public bool manIdentification(string[] names)
+    public bool isManExist(string[] names)
     {  
         string first = names[0];
         string last = names[1];
@@ -140,5 +140,43 @@ public class peopleDal
             Console.WriteLine($"error: {e}");
         }
         return type;
+    }
+
+    public int getNumReports(int id)
+    {
+        int num_reports = 0;
+        try
+        {
+            this.query = "SELECT num_reports FROM people WHERE id = @id";
+            this.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
+            cmd.Parameters.AddWithValue("@id", id);
+            num_reports = Convert.ToInt32(cmd.ExecuteScalar());
+            this.conn.Close();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
+        return num_reports;
+    }
+
+    public int getNumMentions(int id)
+    {
+        int num_mentions = 0;
+        try
+        {
+            this.query = "SELECT num_mentions FROM people WHERE id = @id";
+            this.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(this.query, this.conn);
+            cmd.Parameters.AddWithValue("@id", id);
+            num_mentions = Convert.ToInt32(cmd.ExecuteScalar());
+            this.conn.Close();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
+        return num_mentions;
     }
 }

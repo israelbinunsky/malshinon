@@ -13,7 +13,7 @@ namespace malshinon
     {
         static void Main(string[] args)
         {
-            menue();
+            //menue();
         }
 
         static void menue()
@@ -21,6 +21,10 @@ namespace malshinon
             report report = new report();
             Console.WriteLine("Wellcome to Malshinon!");
             string[] reporterNames = report.reporterIdentification();
+            if (reporterNames.Length != 2)
+            { Console.WriteLine("invalid name.");
+                return;
+            }
             Console.WriteLine("To add a new report enter 1");
             Console.WriteLine("To get all alerts enter 2");
             Console.WriteLine("To get all potential agents enter 3");

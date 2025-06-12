@@ -27,13 +27,13 @@ public static class Stats
                 Console.WriteLine($"name: {name}. created at: {created_at}");
             }
             dal.conn.Close();
-            if (cnt > 0)
+            if (cnt <= 0)
             {
                 Console.WriteLine("No threats have been identified yet.");
             }
             else
             {
-                Console.WriteLine($"num of alerts: {cnt}");
+                Console.WriteLine($"Total num of alerts: {cnt}");
             }
         }
         catch (Exception e)
@@ -59,13 +59,13 @@ public static class Stats
                 Console.WriteLine($"{first_name} {last_name}.");
             }
             dal.conn.Close();
-            if (cnt > 0)
+            if (cnt <= 0)
             {
                 Console.WriteLine("There is no agents yet.");
             }
             else
             {
-                Console.WriteLine($"num of agents: {cnt}");
+                Console.WriteLine($"Total num of agents: {cnt}");
             }
         }
         catch (Exception e)
