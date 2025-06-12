@@ -1,10 +1,10 @@
 # class program
 ### menue()
-reporterIdentification()
-options:
-addReport (class report)
-getAllAlerts (class stats)
-getAllAgents (class stats)
+reporterIdentification()  
+options:  
+addReport (class report)  
+getAllAlerts (class stats)  
+getAllAgents (class stats)  
 # class report
 ### reporterIdentification()
 ### addReport(string[] reporterNames)
