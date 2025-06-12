@@ -51,7 +51,7 @@ public class report
             dal.conn.Close();
             updates.addCount("reporter", reporterId);
             updates.addCount("target", targetId);
-            Console.WriteLine("edded report.");
+            Console.WriteLine($"Thenk you {reporterNames[0]}, your report has been edded.");
             updates.reporterToAgent(reporterId);
             updates.targetToThreat(targetId);
         }
