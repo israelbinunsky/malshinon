@@ -1,12 +1,15 @@
 # class program
 ### menue()
-reporterIdentification()  
+reporterIdentification (class report)  
 options:  
 addReport (class report)  
 getAllAlerts (class stats)  
 getAllAgents (class stats)  
 # class report
 ### reporterIdentification()
+isManExist (class peopleDal)  
+if false: SetNewMan (class peopleDal)  
+else: getPersonType (class peopleDal) if he "target": updateManType (class updates) to "both"
 ### addReport(string[] reporterNames)
 # class peopleDal
 ###  isManExist(string[] names)
