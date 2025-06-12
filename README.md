@@ -14,8 +14,9 @@ else: getPersonType (class peopleDal) if he "target": updateManType (class updat
 getTargetName (class local)  
 isManExist. if false: SetNewMan, else: getPersonType. if he "reporter": updateManType to "both"  
 then insert report to table with reporter and target id's  
-reporterToAgent (updates)  
-targetToThreat (updates)
+addCount (updates): reporter - num_reports; target - num_mentions  
+reporterToAgent (updates)   
+targetToThreat (updates)  
 # class peopleDal
 ###  isManExist(string[] names)
 ### SetNewMan(string[] names, string type)
@@ -33,13 +34,29 @@ find Capitalized name from text report
 ### addCount(string type, int id)
 ### updateManType(int id, string type)
 ### reporterToAgent(int id)
+getPersonType (peopleDal)  
+if != "potential_agent": getNumReports (peopleDal)     
+if > 9: calculateAverageLen (updates)    
+if > 15: updateManType (updates)  
 ### targetToThreat(int id)
+getPersonType  
+if != "potential threat": getNumMentions (peopleDal)  
+if > 9:   
+or isIn15Min (updates)    
+if true:  
+updateManType  
+addAlert (alerts)  
 ### getReportsLens(int id)
+return list of nums: len of each report  
 ### calculateAverageLen(int id)
-### getDatetimes(int targetId)
+getReportsLens (updates)  
+### get3Datetimes(int targetId)
 ### isIn15Min(int targetId)
+get3Datetimes (updates)
+is all 3 in 15 minutes
 # class alerts
 ### addAlert(int targetId)
+add target id to alerts table, datetime auto incrument  
 # class stats
 ### getAllAlerts()
 ### getAllAgents()
