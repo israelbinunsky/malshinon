@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System.Runtime.Intrinsics.X86;
+using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Common;
 
 public class Updates
@@ -31,7 +32,7 @@ public class Updates
         dal.conn.Close();
     }
 
-    private void updateManType(int id, string type)
+    public void updateManType(int id, string type)
     {
         dal.query = "UPDATE people SET type = @type WHERE id = @id;";
         dal.conn.Open();
@@ -73,7 +74,16 @@ public class Updates
             {
                 updateManType(id, "potential_threat");
                 string name = dal.getPersonName(id);
-                Console.WriteLine($"{name} is a potential threat!");
+                Console.WriteLine($"10 reports about the target. {name} is a potential threat!");
+                alerts.addAlert(id);
+                return;
+            }
+            bool isIn15 = isIn15Min(id);
+            if (isIn15 == true)
+            {
+                updateManType(id, "potential_threat");
+                string name = dal.getPersonName(id);
+                Console.WriteLine($"3 reports about the target in 15 minutes. {name} is a potential threat!");
                 alerts.addAlert(id);
             }
         }
@@ -119,8 +129,9 @@ public class Updates
         return result;
     }
 
-    public void getDatetimes(int targetId)
+    public List<DateTime> getDatetimes(int targetId)
     {
+        List<DateTime> times = new List<DateTime>();
         try
         {
             dal.query = "SELECT datetime FROM intelreports WHERE target_id = @targetId";
@@ -128,9 +139,14 @@ public class Updates
             MySqlCommand cmd = new MySqlCommand(dal.query, dal.conn);
             cmd.Parameters.AddWithValue("@target_id", targetId);
             var reader = cmd.ExecuteReader();
+            int cnt = 0;
             while (reader.Read())
-            {
-                DateTime txt = reader.GetDateTime("text"); 
+            { 
+                DateTime time = reader.GetDateTime("text");
+                times.Add(time);
+                cnt++;
+                if (cnt >= 3)
+                { return times; }
             }
             dal.conn.Close();
         }
@@ -139,5 +155,20 @@ public class Updates
         {
             Console.WriteLine($"error: {e}");
         }
+        return times;
+    }
+
+    public bool isIn15Min(int targetId)
+    {
+        List<DateTime> times = getDatetimes(targetId);
+        DateTime min = times.Min();
+        DateTime max = times.Max();
+
+        double diff = (max - min).TotalMinutes;
+        if (diff <= 15)
+        {
+            return true;
+        }
+        else { return false; }
     }
 }

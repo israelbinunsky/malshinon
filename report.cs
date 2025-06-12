@@ -44,8 +44,8 @@ public class report
         string report = Console.ReadLine();
         int reporterId = dal.getPersonId(reporterNames);
         string[] targetNames = local.getTargetName(report);
-        bool isTargetExist = dal.isManExist(targetNames);
         int targetId = -1;
+        bool isTargetExist = dal.isManExist(targetNames);
 
         if (isTargetExist == false)
         {
