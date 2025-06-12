@@ -9,11 +9,17 @@ getAllAgents (class stats)
 ### reporterIdentification()
 isManExist (class peopleDal)  
 if false: SetNewMan (class peopleDal)  
-else: getPersonType (class peopleDal) if he "target": updateManType (class updates) to "both"
+else: getPersonType (class peopleDal) if he "target": updateManType (class updates) to "both"  
 ### addReport(string[] reporterNames)
+getTargetName (class local)  
+isManExist. if false: SetNewMan, else: getPersonType. if he "reporter": updateManType to "both"  
+then insert report to table with reporter and target id's  
+reporterToAgent (updates)  
+targetToThreat (updates)
 # class peopleDal
 ###  isManExist(string[] names)
 ### SetNewMan(string[] names, string type)
+secret code: ganarateCode (class local)
 ### getPersonId(string[] names)
 ### getPersonName(int id)
 ### getPersonType(int id)
@@ -22,6 +28,7 @@ else: getPersonType (class peopleDal) if he "target": updateManType (class updat
 # class local
 ### ganarateCode(int len)
 ### getTargetName(string txt)
+find Capitalized name from text report  
 # class updates
 ### addCount(string type, int id)
 ### updateManType(int id, string type)
