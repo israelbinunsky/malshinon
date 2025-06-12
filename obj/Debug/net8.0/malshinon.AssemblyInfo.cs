@@ -15,6 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+200882c30c161a444f3008be7cd285a0e6b36503")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+26ce3cc759eebe6feeb3dd38d3587575dd9ddc6c")]
 [assembly: System.Reflection.AssemblyProductAttribute("malshinon")]
 [assembly: System.Reflection.AssemblyTitleAttribute("malshinon")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
