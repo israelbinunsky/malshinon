@@ -25,22 +25,36 @@ public class Updates
                 Console.WriteLine("invalid type");
                 break;
         }
-        dal.conn.Open();
-        MySqlCommand cmd = new MySqlCommand(dal.query, dal.conn);
-        cmd.Parameters.AddWithValue("@id", id);
-        cmd.ExecuteNonQuery();
-        dal.conn.Close();
+        try
+        {
+            dal.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(dal.query, dal.conn);
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.ExecuteNonQuery();
+            dal.conn.Close();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
     }
 
     public void updateManType(int id, string type)
     {
         dal.query = "UPDATE people SET type = @type WHERE id = @id;";
-        dal.conn.Open();
-        MySqlCommand cmd = new MySqlCommand(dal.query, dal.conn);
-        cmd.Parameters.AddWithValue("@type", type);
-        cmd.Parameters.AddWithValue("@id", id);
-        cmd.ExecuteNonQuery();
-        dal.conn.Close();
+        try
+        {
+            dal.conn.Open();
+            MySqlCommand cmd = new MySqlCommand(dal.query, dal.conn);
+            cmd.Parameters.AddWithValue("@type", type);
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.ExecuteNonQuery();
+            dal.conn.Close();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"error: {e}");
+        }
     }
 
     public void reporterToAgent(int id)
@@ -70,7 +84,7 @@ public class Updates
         if (type != "potential_threat")
         {
             int num_mentions = dal.getNumMentions(id);
-            if (num_mentions >= 10)
+            if (num_mentions > 9)
             {
                 updateManType(id, "potential_threat");
                 string name = dal.getPersonName(id);
@@ -129,7 +143,7 @@ public class Updates
         return result;
     }
 
-    public List<DateTime> getDatetimes(int targetId)
+    public List<DateTime> get3Datetimes(int targetId)
     {
         List<DateTime> times = new List<DateTime>();
         try
@@ -160,7 +174,7 @@ public class Updates
 
     public bool isIn15Min(int targetId)
     {
-        List<DateTime> times = getDatetimes(targetId);
+        List<DateTime> times = get3Datetimes(targetId);
         DateTime min = times.Min();
         DateTime max = times.Max();
 

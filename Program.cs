@@ -13,7 +13,7 @@ namespace malshinon
     {
         static void Main(string[] args)
         {
-            //menue();
+            menue();
         }
 
         static void menue()
