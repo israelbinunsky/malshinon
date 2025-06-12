@@ -14,9 +14,9 @@ else: getPersonType (class peopleDal) if he "target": updateManType (class updat
 getTargetName (class local)  
 isManExist. if false: SetNewMan, else: getPersonType. if he "reporter": updateManType to "both"  
 then insert report to table with reporter and target id's  
-addCount (updates): reporter - num_reports; target - num_mentions  
-reporterToAgent (updates)   
-targetToThreat (updates)  
+addCount (class updates): reporter - num_reports; target - num_mentions  
+reporterToAgent (class updates)   
+targetToThreat (class updates)  
 # class peopleDal
 ###  isManExist(string[] names)
 ### SetNewMan(string[] names, string type)
