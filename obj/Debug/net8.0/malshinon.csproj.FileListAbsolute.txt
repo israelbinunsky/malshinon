@@ -38,3 +38,4 @@ C:\Users\israel\Desktop\תכנות\visual studio\malshinon\obj\Debug\net8.0\refi
 C:\Users\israel\Desktop\תכנות\visual studio\malshinon\obj\Debug\net8.0\malshinon.pdb
 C:\Users\israel\Desktop\תכנות\visual studio\malshinon\obj\Debug\net8.0\malshinon.genruntimeconfig.cache
 C:\Users\israel\Desktop\תכנות\visual studio\malshinon\obj\Debug\net8.0\ref\malshinon.dll
+C:\Users\israel\Desktop\תכנות\visual studio\malshinon\obj\Debug\net8.0\malshinon.sourcelink.json
